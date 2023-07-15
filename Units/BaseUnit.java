@@ -1,4 +1,7 @@
 package Семинар.Units;
+
+import java.util.ArrayList;
+
 /**Базовые свойства: Здоровье, броня, скорость, потребление, урон, инициатива
  * Базовые методы: атаковать, защищаться, перемещаться, умирать 
  */
@@ -14,8 +17,10 @@ public abstract class BaseUnit implements GameInterface{
     protected int damage;
     protected int defense;
     protected int initiative;
+    protected Coordinates coordinates;
+    protected String name; 
 /** Базовый конструктор юнита*/
-    protected BaseUnit(int maxHp, int armor, int speed, int consumption, int damage, int defense) {
+    protected BaseUnit(int maxHp, int armor, int speed, int consumption, int damage, int defense, int x, int y, String name) {
         this.maxHp = maxHp;
         this.hp = maxHp;
         this.armor = armor;
@@ -24,19 +29,19 @@ public abstract class BaseUnit implements GameInterface{
         this.damage = damage;
         this.defense = defense;
         this.alive = true;
+        this.coordinates = new Coordinates(x, y);
+        this.name = name;
+
     }
 /** Метод получения актуальной информации о персонаже */
     public String getInfo() {
         if (this.alive) {
-            return String.format("[Класс: %s Здоровье: %d / %d Броня: %d Скорость: %d Потребление: %d Дамаг: %d Защита: %d] ",
+            return String.format("[Имя: %s Класс: %s Здоровье: %d / %d Координты: %s]",
+                    this.name,
                     this.getClass().getSimpleName(),
                     this.hp,
                     this.maxHp,
-                    this.armor,
-                    this.speed,
-                    this.consumption,
-                    this.damage,
-                    this.defense);
+                    this.coordinates.toString());
         }
         return String.format("%s мертвый", this.getClass().getSimpleName());
     }
@@ -57,5 +62,19 @@ public abstract class BaseUnit implements GameInterface{
         agressor.hp -= this.defense > agressor.armor ? this.defense - agressor.armor : 1;
         if(agressor.hp <= 0) { agressor.die(); }
     }
-    
+
+    protected BaseUnit nearestEnemy(ArrayList<BaseUnit> enemyTeam) {
+        double minDistance = 100.0;
+        BaseUnit nE = enemyTeam.get(0);
+        for(BaseUnit enemy : enemyTeam) {
+            double distance = Math.sqrt(Math.pow((this.coordinates.x-enemy.coordinates.x), 2) +
+                    Math.pow((this.coordinates.y-enemy.coordinates.y), 2));
+            if(distance < minDistance && enemy.alive) {
+                nE = enemy; 
+                minDistance = distance;
+            }
+        }
+        return nE;
+    } 
+
 }
