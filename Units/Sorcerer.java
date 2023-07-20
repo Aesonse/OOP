@@ -8,7 +8,7 @@ public class Sorcerer extends RangeUnit {
     private int attackAreaSize;
 
     public Sorcerer(int x, int y, String name) {
-        super(100, 10, 2, 1, 20, 5, 6, x, y, name);
+        super(100, 10, 2, 1, 20, 5, 6, x, y, name,5);
         this.attackAreaSize = 2;
     }   
 
@@ -16,7 +16,7 @@ public class Sorcerer extends RangeUnit {
         System.out.printf("Колдун зачаровал %s \n", target.getClass().getSimpleName());
     }
     @Override
-    public void step(ArrayList<BaseUnit> enemyTeam) {
-        System.out.println(this.name + "- ближайший противник " + this.nearestEnemy(enemyTeam).name);
+    public void step(Team friends, Team enemies) {
+        System.out.println(this.name + "- ближайший противник " + this.nearestEnemy(enemies).name);
     }
 }
